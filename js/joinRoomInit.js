@@ -1,17 +1,43 @@
 
 
+
 let localTrack;
 let remoteUsers = {};
 
-const joinRoomInit = async (client, APP_Id, roomId, token, uid) => {
+let relclient;
+let rtmclient
+let channel
 
-  console.log("IN join Room Init", client, APP_Id, roomId, token, uid);
+let displayName = sessionStorage.getItem("display_name");
+const joinRoomInit = async (client,APP_Id, roomId, token, uid,handleMemberJoined,handleMemberLeft,getMembers,handleChannelMessage,addBotMessageToDom) => {
+  // let displayName = sessionStorage.getItem("display_name");
+  if(!displayName){
+    window.location = '/'
+  
+  }
 
+  console.log("Handel Displayname",displayName);
+
+
+
+
+  rtmclient = await AgoraRTM.createInstance(APP_Id);
+  await rtmclient.login({ uid, token })
+  await rtmclient.addOrUpdateLocalUserAttributes({'name' : displayName})
+  channel = await rtmclient.createChannel(roomId)
+  await channel.join()
+  channel.on('MemberJoined',handleMemberJoined)
+  channel.on('MemberLeft', handleMemberLeft)
+  channel.on('ChannelMessage', handleChannelMessage)
+  getMembers()
+  addBotMessageToDom(`Welcome to the room! ${displayName}`)
+  
   client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
   await client.join(APP_Id, roomId, token, uid);
+  console.log("IN join Room Init", client, APP_Id, roomId, token, uid);
 
   const handleUserPublished = async (user, mediaType) => {
-    console.log("Handle user publish", remoteUsers);
+
     remoteUsers[user.uid] = user;
 
     await client.subscribe(user, mediaType);
@@ -107,12 +133,12 @@ const joinRoomInit = async (client, APP_Id, roomId, token, uid) => {
       },
     }
   );
-  console.log("local track is", localTrack);
+
 
   let player = `<div class="video_container" id="user-container-${uid}">
                     <div class="video-player" id="user-${uid}"></div>
                 </div>`;
-  console.log("Player", player);
+
 
   document
     .getElementById("streams_container")
@@ -122,6 +148,11 @@ const joinRoomInit = async (client, APP_Id, roomId, token, uid) => {
     .addEventListener("click", expandVideoFrame);
   localTrack[1].play(`user-${uid}`);
   await client.publish([localTrack[0], localTrack[1]]);
+  relclient = client;
+
+
+
+
 }
 
-export { joinRoomInit, localTrack, remoteUsers };
+export { relclient,joinRoomInit, localTrack, remoteUsers ,rtmclient,channel,displayName};

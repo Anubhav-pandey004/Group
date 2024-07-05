@@ -27,7 +27,7 @@ const Lobby = () => {
 
   return (
     <div className=' container flex justify-center items-center min-h-[calc(100vh-65px)] top-0 min-w-full overflow-hidden'>
-       <main id="room__lobby__container" className='container bg-violet-950 rounded-lg w-[40%] '>
+       <main id="room__lobby__container" className='container bg-violet-950 rounded-lg md:w-[40%] '>
         <div id="form__container" className='flex-col justify-center mx-auto'>
              <div id="form__container__header" className='w-full bg-violet-800 flex justify-center h-10 items-center text-lg font-semibold text-white'>
                  <p>👋 Create or Join Room</p>
