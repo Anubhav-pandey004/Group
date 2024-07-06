@@ -41,7 +41,7 @@ const Room = () => {
     updateMemberTotal(members);
 
     let { name } = await rtmclient.getUserAttributesByKeys(MemberId, ["name"]);
-    // addBotMessageToDom(`Welcome to the room! ${name}`)
+    addBotMessageToDom(`Welcome to the room! ${name}`)
   };
   let addMemberToDom = async (MemberId) => {
     let { name } = await rtmclient.getUserAttributesByKeys(MemberId, ["name"]);
@@ -68,6 +68,8 @@ const Room = () => {
     removeMemberFromDom(MemberId);
     let members = await channel.getMembers();
     updateMemberTotal(members);
+    let { name } = await rtmclient.getUserAttributesByKeys(MemberId, ["name"]);
+    addBotMessageToDom(`${name} has left the Room !`)
   };
   let getMembers = async () => {
     let members = await channel.getMembers();
@@ -84,7 +86,7 @@ const Room = () => {
       document.getElementsByClassName("member_name")[
         document.getElementsByClassName("member_name").length - 1
       ].textContent;
-    // addBotMessageToDom(`${name} has left the Room !`)
+   
     console.log(
       "IN RemoveMember fromDom :::::",
       document.getElementsByClassName("member_name").length
@@ -336,12 +338,12 @@ const Room = () => {
       >
         <div
           id="stream_box"
-          className="min-h-[70%] bg-slate-200 lg:w-[70%] w-full mx-auto"
+          className="min-h-[70%] object-scale-down  bg-slate-200 lg:w-[70%] w-full mx-auto"
         ></div>
 
         <div
           id="streams_container"
-          className="bg-gray-950 w-[100%] gap-6 "
+          className="bg-gray-950 w-[100%] gap-6 overflow-auto scrollbar-none"
         ></div>
 
         <div className="stream__actions fixed flex bottom-5  w-full z-20  gap-3 justify-center">
@@ -403,9 +405,9 @@ const Room = () => {
             </svg>
           </button>
         </div>
-        <button id="join-btn" className="hidden">
+        {/* <button id="join-btn" className="hidden">
           Join Stream
-        </button>
+        </button> */}
       </section>
 
      {

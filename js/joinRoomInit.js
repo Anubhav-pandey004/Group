@@ -30,7 +30,7 @@ const joinRoomInit = async (client,APP_Id, roomId, token, uid,handleMemberJoined
   channel.on('MemberLeft', handleMemberLeft)
   channel.on('ChannelMessage', handleChannelMessage)
   getMembers()
-  addBotMessageToDom(`Welcome to the room! ${displayName}`)
+  // addBotMessageToDom(`Welcome to the room! ${displayName}`)
   
   client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
   await client.join(APP_Id, roomId, token, uid);
@@ -39,13 +39,17 @@ const joinRoomInit = async (client,APP_Id, roomId, token, uid,handleMemberJoined
   const handleUserPublished = async (user, mediaType) => {
 
     remoteUsers[user.uid] = user;
+    remoteUsers[user.uid].name = displayName
 
     await client.subscribe(user, mediaType);
     let player = document.getElementById(`user-container-${user.uid}`);
     if (player === null) {
       player = `<div class="video_container" id="user-container-${user.uid}">
                       <div class="video-player" id="user-${user.uid}"></div>
+                      
                   </div>`;
+
+                  console.log("user object is ",user,remoteUsers);
       document
         .getElementById("streams_container")
         .insertAdjacentHTML("beforeend", player);
@@ -122,6 +126,7 @@ const joinRoomInit = async (client,APP_Id, roomId, token, uid,handleMemberJoined
 
   client.on("user-published", handleUserPublished);
   client.on("user-left", handleUserLeft);
+  // addBotMessageToDom(`Welcome to the room! ${displayName}`)
 
   // Joining channel
   localTrack = await AgoraRTC.createMicrophoneAndCameraTracks(
