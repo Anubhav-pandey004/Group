@@ -7,7 +7,7 @@ import {
   rtmclient,
   channel,
   displayName
-} from "../../js/joinRoomInit";
+} from "../../public/js/joinRoomInit";
 import sideContext from "../context";
 import chatContext from "../context/chats";
 
